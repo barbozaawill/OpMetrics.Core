@@ -1,0 +1,6 @@
+@OpMetrics.Core_HostAddress = http://localhost:5160
+
+GET {{OpMetrics.Core_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
