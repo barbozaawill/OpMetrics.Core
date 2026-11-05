@@ -21,20 +21,22 @@ public class  CreateOeeValidator : AbstractValidator<CreateOeeRequest>
             .WithMessage("Turno deve ser: Manha, Tarde ou Noite.");
 
         RuleFor(x => x.TempoPlaneadoMinutos)
-            .GreaterThan(0).WithMessage("Tempo planeado não pode ser menor que zero");
+            .GreaterThan(0).WithMessage("Tempo planeado deve ser maior que zero");
 
         RuleFor(x => x.TempoRodandoMinutos)
             .GreaterThanOrEqualTo(0)
-            .LessThan(x => x.TempoPlaneadoMinutos).WithMessage("Tempo Rodando não pode ser menor que zero");
+            .WithMessage("Tempo rodando não pode ser menor que zero")
+            .LessThanOrEqualTo(x => x.TempoPlaneadoMinutos).WithMessage("Tempo rodando não pode ser maior que o tempo planeado");
 
         RuleFor(x => x.CapacidadeIdealPecas)
-            .GreaterThan(0).WithMessage("Capacidade ideal não pode ser menor que zero");
+            .GreaterThan(0).WithMessage("Capacidade ideal deve ser maior que zero");
 
         RuleFor(x => x.PecasProduzidas)
             .GreaterThanOrEqualTo(0).WithMessage("Peças produzidas não pode ser menor que zero");
 
         RuleFor(x => x.PecasBoas)
             .GreaterThanOrEqualTo(0)
-            .LessThan(x => x.PecasProduzidas).WithMessage("Peças boas não pode ser menor que zero");
+            .WithMessage("Peças boas não pode ser menor que zero")
+            .LessThanOrEqualTo(x => x.PecasProduzidas).WithMessage("Peças boas não pode ser maior que peças produzidas");
     }
 }
