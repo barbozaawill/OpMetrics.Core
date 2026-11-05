@@ -12,7 +12,7 @@ public class Oee : BaseEntity
     public double PecasProduzidas { get; set; }
     public double Performance => CapacidadeIdealPecas > 0 ? (PecasProduzidas / CapacidadeIdealPecas) * 100 : 0 ;
     public double PecasBoas { get; set; }
-    public double IndiceQualidade => IndiceQualidade > 0 ? (PecasBoas / PecasProduzidas) * 100 : 0;
+    public double IndiceQualidade => PecasProduzidas > 0 ? (PecasBoas / PecasProduzidas) * 100 : 0;
     public double OeePercentual => (Disponibilidade / 100) * (Performance / 100) * (IndiceQualidade / 100) * 100;
 
 }
