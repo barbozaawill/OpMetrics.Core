@@ -5,6 +5,8 @@ VisualStudioVersion = 17.14.36603.0 d17.14
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpMetrics.Core", "OpMetrics.Core.csproj", "{A9D44FAF-4690-4491-A6D2-91980B1C88FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpMetrics.Tests", "OpMetrics.Tests\OpMetrics.Tests.csproj", "{075D15A7-48EE-4F5D-8B37-0F68F28E3D17}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{A9D44FAF-4690-4491-A6D2-91980B1C88FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9D44FAF-4690-4491-A6D2-91980B1C88FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9D44FAF-4690-4491-A6D2-91980B1C88FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{075D15A7-48EE-4F5D-8B37-0F68F28E3D17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{075D15A7-48EE-4F5D-8B37-0F68F28E3D17}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{075D15A7-48EE-4F5D-8B37-0F68F28E3D17}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{075D15A7-48EE-4F5D-8B37-0F68F28E3D17}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
