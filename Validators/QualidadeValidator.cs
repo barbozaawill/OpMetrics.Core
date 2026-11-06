@@ -24,12 +24,17 @@ public class CreateQualidadeValidator : AbstractValidator<CreateQualidadeRequest
             .GreaterThan(0).WithMessage("O valor do total de peças inspecionadas não pode ser zero.");
 
         RuleFor(x => x.TotalDefeitos)
-            .GreaterThanOrEqualTo(0)
-            .LessThan(x => x.TotalInspecionado).WithMessage("Valor não pode ser maior que o total inspecionado");
+            .GreaterThanOrEqualTo(0).WithMessage("Total de defeitos não pode ser negativo");
 
         RuleFor(x => x.TotalRejeitos)
-            .GreaterThanOrEqualTo(0)
-            .LessThan(x => x.TotalInspecionado).WithMessage("Valor não pode ser maior que o total inspecionado");
+            .GreaterThanOrEqualTo(0).WithMessage("Total de rejeitos não pode ser negativo");
+
+        // Defeitos + rejeitos nunca podem passar do total inspecionado,
+        // senao o IndiceQualidade fica negativo.
+        RuleFor(x => x)
+            .Must(x => x.TotalDefeitos + x.TotalRejeitos <= x.TotalInspecionado)
+            .WithName("TotalDefeitos")
+            .WithMessage("Defeitos + rejeitos não pode ser maior que o total inspecionado");
 
     }
 }
