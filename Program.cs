@@ -19,8 +19,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateProducaoValidator>();
-// Executa os validators automaticamente antes de chegar no controller.
-// Se a requisicao for invalida, a API responde 400 com os erros (ValidationProblemDetails).
 builder.Services.AddFluentValidationAutoValidation();
 
 //repositorios

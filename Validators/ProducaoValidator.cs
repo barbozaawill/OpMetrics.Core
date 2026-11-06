@@ -2,7 +2,6 @@
 using OpMetrics.Core.DTOs.Requests;
 
 namespace OpMetrics.Core.Validators;
-// Regras comuns ao Create e ao Update de Producao.
 public class ProducaoRequestRegras : AbstractValidator<IProducaoRequest>
 {
     public ProducaoRequestRegras()

@@ -30,7 +30,6 @@ public class OeeValidatorTests
     [Fact]
     public void CemPorCentoDePecasBoas_EhValido()
     {
-        // Antes da correcao, LessThan rejeitava um turno sem nenhuma peca ruim.
         var request = CriarRequestValido();
         request.PecasBoas = request.PecasProduzidas;
 

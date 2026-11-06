@@ -4,7 +4,6 @@ using OpMetrics.Core.DTOs.Requests;
 namespace OpMetrics.Core.Validators;
 
 
-// Regras comuns ao Create e ao Update de Qualidade.
 public class QualidadeRequestRegras : AbstractValidator<IQualidadeRequest>
 {
     public QualidadeRequestRegras()
@@ -30,8 +29,6 @@ public class QualidadeRequestRegras : AbstractValidator<IQualidadeRequest>
         RuleFor(x => x.TotalRejeitos)
             .GreaterThanOrEqualTo(0).WithMessage("Total de rejeitos não pode ser negativo");
 
-        // Defeitos + rejeitos nunca podem passar do total inspecionado,
-        // senao o IndiceQualidade fica negativo.
         RuleFor(x => x)
             .Must(x => x.TotalDefeitos + x.TotalRejeitos <= x.TotalInspecionado)
             .WithName("TotalDefeitos")

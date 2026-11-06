@@ -20,7 +20,7 @@ public class QualidadeValidatorTests
     [Theory]
     [InlineData(100, 0, 0)]
     [InlineData(100, 10, 5)]
-    [InlineData(100, 60, 40)] // soma exatamente igual ao inspecionado
+    [InlineData(100, 60, 40)]
     public void SomaDentroDoInspecionado_EhValido(int inspecionado, int defeitos, int rejeitos)
     {
         Assert.True(_validator.Validate(CriarRequest(inspecionado, defeitos, rejeitos)).IsValid);
@@ -29,7 +29,6 @@ public class QualidadeValidatorTests
     [Fact]
     public void DefeitosMaisRejeitosAcimaDoInspecionado_EhInvalido()
     {
-        // 60 + 60 > 100: antes passava (cada um < 100) e gerava IndiceQualidade negativo.
         var resultado = _validator.Validate(CriarRequest(100, 60, 60));
 
         Assert.False(resultado.IsValid);

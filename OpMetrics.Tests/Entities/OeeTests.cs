@@ -4,11 +4,6 @@ namespace OpMetrics.Tests.Entities;
 
 public class OeeTests
 {
-    // Exemplo classico de OEE:
-    // 480 min planeados, 432 rodando  -> Disponibilidade 90%
-    // 1000 pecas ideais, 950 feitas   -> Performance 95%
-    // 950 feitas, 931 boas            -> Qualidade 98%
-    // OEE = 0,90 * 0,95 * 0,98 = 83,79%
     private static Oee CriarOeeExemplo() => new()
     {
         TempoPlaneadoMinutos = 480,
@@ -37,8 +32,6 @@ public class OeeTests
     [Fact]
     public void IndiceQualidade_EhPecasBoasSobrePecasProduzidas()
     {
-        // Este teste derrubaria o processo inteiro (StackOverflowException)
-        // antes da correcao, porque a propriedade lia ela mesma.
         var oee = CriarOeeExemplo();
 
         Assert.Equal(98, oee.IndiceQualidade, precision: 2);

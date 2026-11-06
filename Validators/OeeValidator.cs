@@ -3,7 +3,6 @@ using OpMetrics.Core.DTOs.Requests;
 
 namespace OpMetrics.Core.Validators;
 
-// Regras comuns ao Create e ao Update de Oee.
 public class OeeRequestRegras : AbstractValidator<IOeeRequest>
 {
     public OeeRequestRegras()

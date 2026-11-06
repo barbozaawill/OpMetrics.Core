@@ -6,7 +6,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
-  <!-- O projeto de testes fica numa subpasta; sem isso a API tentaria compilar os testes. -->
   <ItemGroup>
     <Compile Remove="OpMetrics.Tests/**" />
     <Content Remove="OpMetrics.Tests/**" />

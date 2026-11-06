@@ -3,8 +3,6 @@ using OpMetrics.Core.Validators;
 
 namespace OpMetrics.Tests.Validators;
 
-// O Update usa as mesmas regras do Create (via Include), entao aqui
-// o foco e garantir que o PUT nao aceita mais dados invalidos.
 public class UpdateValidatorsTests
 {
     [Fact]
