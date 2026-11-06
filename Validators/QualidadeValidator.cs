@@ -4,9 +4,10 @@ using OpMetrics.Core.DTOs.Requests;
 namespace OpMetrics.Core.Validators;
 
 
-public class CreateQualidadeValidator : AbstractValidator<CreateQualidadeRequest>
+// Regras comuns ao Create e ao Update de Qualidade.
+public class QualidadeRequestRegras : AbstractValidator<IQualidadeRequest>
 {
-    public CreateQualidadeValidator()
+    public QualidadeRequestRegras()
     {
         RuleFor(x => x.Linha)
             .NotEmpty().WithMessage("Linha é obrigatória")
@@ -35,6 +36,21 @@ public class CreateQualidadeValidator : AbstractValidator<CreateQualidadeRequest
             .Must(x => x.TotalDefeitos + x.TotalRejeitos <= x.TotalInspecionado)
             .WithName("TotalDefeitos")
             .WithMessage("Defeitos + rejeitos não pode ser maior que o total inspecionado");
+    }
+}
 
+public class CreateQualidadeValidator : AbstractValidator<CreateQualidadeRequest>
+{
+    public CreateQualidadeValidator()
+    {
+        Include(new QualidadeRequestRegras());
+    }
+}
+
+public class UpdateQualidadeValidator : AbstractValidator<UpdateQualidadeRequest>
+{
+    public UpdateQualidadeValidator()
+    {
+        Include(new QualidadeRequestRegras());
     }
 }

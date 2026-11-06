@@ -1,6 +1,20 @@
 ﻿namespace OpMetrics.Core.DTOs.Requests;
 
-public class CreateOeeRequest
+// Create e Update tem os mesmos campos, entao compartilham esta interface.
+// Assim as regras de validacao sao escritas uma vez so (ver Validators/OeeValidator.cs).
+public interface IOeeRequest
+{
+    string Linha { get; set; }
+    DateTime Data { get; set; }
+    string Turno { get; set; }
+    double TempoPlaneadoMinutos { get; set; }
+    double TempoRodandoMinutos { get; set; }
+    double CapacidadeIdealPecas { get; set; }
+    double PecasProduzidas { get; set; }
+    double PecasBoas { get; set; }
+}
+
+public class CreateOeeRequest : IOeeRequest
 {
     public string Linha { get; set; } = string.Empty;
     public DateTime Data { get; set; } 
@@ -12,7 +26,7 @@ public class CreateOeeRequest
     public double PecasBoas { get; set; }
 }
 
-public class UpdateOeeRequest
+public class UpdateOeeRequest : IOeeRequest
 {
     public string Linha { get; set; } = string.Empty;
     public DateTime Data { get; set; }

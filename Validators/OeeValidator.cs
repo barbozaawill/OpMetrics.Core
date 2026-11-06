@@ -3,9 +3,10 @@ using OpMetrics.Core.DTOs.Requests;
 
 namespace OpMetrics.Core.Validators;
 
-public class  CreateOeeValidator : AbstractValidator<CreateOeeRequest>
+// Regras comuns ao Create e ao Update de Oee.
+public class OeeRequestRegras : AbstractValidator<IOeeRequest>
 {
-    public CreateOeeValidator()
+    public OeeRequestRegras()
     {
         RuleFor(x => x.Linha)
             .NotEmpty().WithMessage("Linha é obrigatória")
@@ -38,5 +39,21 @@ public class  CreateOeeValidator : AbstractValidator<CreateOeeRequest>
             .GreaterThanOrEqualTo(0)
             .WithMessage("Peças boas não pode ser menor que zero")
             .LessThanOrEqualTo(x => x.PecasProduzidas).WithMessage("Peças boas não pode ser maior que peças produzidas");
+    }
+}
+
+public class CreateOeeValidator : AbstractValidator<CreateOeeRequest>
+{
+    public CreateOeeValidator()
+    {
+        Include(new OeeRequestRegras());
+    }
+}
+
+public class UpdateOeeValidator : AbstractValidator<UpdateOeeRequest>
+{
+    public UpdateOeeValidator()
+    {
+        Include(new OeeRequestRegras());
     }
 }
