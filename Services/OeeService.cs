@@ -17,13 +17,6 @@ public class OeeService : IOeeService
         _mapper = mapper;
     }
 
-    public async Task<OeeResponse> CreateAsync(CreateOeeRequest request)
-    {
-        var entity = _mapper.Map<Oee>(request);
-        await _repository.CreateAsync(entity);
-        return _mapper.Map<OeeResponse>(entity);
-    }
-
     public async Task<bool> DeleteAsync(Guid id)
     {
         return await _repository.DeleteAsync(id);

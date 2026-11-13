@@ -1,23 +1,20 @@
-using OpMetrics.Core.DTOs.Requests;
-using OpMetrics.Core.Validators;
+using OpMetrics.Core.Features.Oees;
 
 namespace OpMetrics.Tests.Validators;
 
 public class OeeValidatorTests
 {
-    private readonly CreateOeeValidator _validator = new();
+    private readonly RegistrarOee.Validator _validator = new();
 
-    private static CreateOeeRequest CriarRequestValido() => new()
-    {
-        Linha = "Linha 1",
-        Data = DateTime.UtcNow.AddDays(-1),
-        Turno = "Manha",
-        TempoPlaneadoMinutos = 480,
-        TempoRodandoMinutos = 432,
-        CapacidadeIdealPecas = 1000,
-        PecasProduzidas = 950,
-        PecasBoas = 931
-    };
+    private static RegistrarOee.Request CriarRequestValido() => new(
+        Linha: "Linha 1",
+        Data: DateTime.UtcNow.AddDays(-1),
+        Turno: "Manha",
+        TempoPlaneadoMinutos: 480,
+        TempoRodandoMinutos: 432,
+        CapacidadeIdealPecas: 1000,
+        PecasProduzidas: 950,
+        PecasBoas: 931);
 
     [Fact]
     public void RequestValido_PassaNaValidacao()
@@ -30,8 +27,8 @@ public class OeeValidatorTests
     [Fact]
     public void CemPorCentoDePecasBoas_EhValido()
     {
-        var request = CriarRequestValido();
-        request.PecasBoas = request.PecasProduzidas;
+        var valido = CriarRequestValido();
+        var request = valido with { PecasBoas = valido.PecasProduzidas };
 
         Assert.True(_validator.Validate(request).IsValid);
     }
@@ -39,8 +36,8 @@ public class OeeValidatorTests
     [Fact]
     public void TurnoSemParada_EhValido()
     {
-        var request = CriarRequestValido();
-        request.TempoRodandoMinutos = request.TempoPlaneadoMinutos;
+        var valido = CriarRequestValido();
+        var request = valido with { TempoRodandoMinutos = valido.TempoPlaneadoMinutos };
 
         Assert.True(_validator.Validate(request).IsValid);
     }
@@ -48,23 +45,23 @@ public class OeeValidatorTests
     [Fact]
     public void PecasBoasMaiorQueProduzidas_EhInvalido()
     {
-        var request = CriarRequestValido();
-        request.PecasBoas = request.PecasProduzidas + 1;
+        var valido = CriarRequestValido();
+        var request = valido with { PecasBoas = valido.PecasProduzidas + 1 };
 
         var resultado = _validator.Validate(request);
 
-        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(CreateOeeRequest.PecasBoas));
+        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(RegistrarOee.Request.PecasBoas));
     }
 
     [Fact]
     public void TempoRodandoMaiorQuePlaneado_EhInvalido()
     {
-        var request = CriarRequestValido();
-        request.TempoRodandoMinutos = request.TempoPlaneadoMinutos + 1;
+        var valido = CriarRequestValido();
+        var request = valido with { TempoRodandoMinutos = valido.TempoPlaneadoMinutos + 1 };
 
         var resultado = _validator.Validate(request);
 
-        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(CreateOeeRequest.TempoRodandoMinutos));
+        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(RegistrarOee.Request.TempoRodandoMinutos));
     }
 
     [Theory]
@@ -72,22 +69,20 @@ public class OeeValidatorTests
     [InlineData("Madrugada")]
     public void TurnoInvalido_EhRejeitado(string turno)
     {
-        var request = CriarRequestValido();
-        request.Turno = turno;
+        var request = CriarRequestValido() with { Turno = turno };
 
         var resultado = _validator.Validate(request);
 
-        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(CreateOeeRequest.Turno));
+        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(RegistrarOee.Request.Turno));
     }
 
     [Fact]
     public void DataFutura_EhRejeitada()
     {
-        var request = CriarRequestValido();
-        request.Data = DateTime.UtcNow.AddDays(1);
+        var request = CriarRequestValido() with { Data = DateTime.UtcNow.AddDays(1) };
 
         var resultado = _validator.Validate(request);
 
-        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(CreateOeeRequest.Data));
+        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(RegistrarOee.Request.Data));
     }
 }

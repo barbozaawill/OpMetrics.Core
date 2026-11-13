@@ -28,7 +28,6 @@ public interface IOeeService
     Task<IEnumerable<OeeResponse>> GetAllAsync();
     Task<OeeResponse?> GetByIdAsync(Guid id);
     Task<IEnumerable<OeeResponse>> GetByLinhaAsync(string linha);
-    Task<OeeResponse> CreateAsync(CreateOeeRequest request);
     Task<OeeResponse?> UpdateAsync(Guid id, UpdateOeeRequest request);
     Task<bool> DeleteAsync(Guid id);
 }

@@ -41,14 +41,6 @@ public class OeeRequestRegras : AbstractValidator<IOeeRequest>
     }
 }
 
-public class CreateOeeValidator : AbstractValidator<CreateOeeRequest>
-{
-    public CreateOeeValidator()
-    {
-        Include(new OeeRequestRegras());
-    }
-}
-
 public class UpdateOeeValidator : AbstractValidator<UpdateOeeRequest>
 {
     public UpdateOeeValidator()
