@@ -1,6 +1,16 @@
 ﻿namespace OpMetrics.Core.DTOs.Requests;
 
-public class CreateQualidadeRequest
+public interface IQualidadeRequest
+{
+    string Linha { get; set; }
+    DateTime Data { get; set; }
+    string Turno { get; set; }
+    int TotalInspecionado { get; set; }
+    int TotalDefeitos { get; set; }
+    int TotalRejeitos { get; set; }
+}
+
+public class CreateQualidadeRequest : IQualidadeRequest
 {
     public string Linha { get; set; } = string.Empty;
     public DateTime Data { get; set; }
@@ -10,7 +20,7 @@ public class CreateQualidadeRequest
     public int TotalRejeitos { get; set; } = 0;
 }
 
-public class UpdateQualidadeRequest
+public class UpdateQualidadeRequest : IQualidadeRequest
 {
     public string Linha { get; set; } = string.Empty;
     public DateTime Data { get; set; }

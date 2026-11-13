@@ -2,9 +2,9 @@
 using OpMetrics.Core.DTOs.Requests;
 
 namespace OpMetrics.Core.Validators;
-public class CreateProducaoValidator : AbstractValidator<CreateProducaoRequest>
+public class ProducaoRequestRegras : AbstractValidator<IProducaoRequest>
 {
-    public CreateProducaoValidator()
+    public ProducaoRequestRegras()
     {
         RuleFor(x => x.Linha)
             .NotEmpty().WithMessage("Linha é obrigatória")
@@ -24,6 +24,21 @@ public class CreateProducaoValidator : AbstractValidator<CreateProducaoRequest>
 
         RuleFor(x => x.PecasProduzidas)
             .GreaterThanOrEqualTo(0).WithMessage("Valor não pode ser negativo");
+    }
+}
 
+public class CreateProducaoValidator : AbstractValidator<CreateProducaoRequest>
+{
+    public CreateProducaoValidator()
+    {
+        Include(new ProducaoRequestRegras());
+    }
+}
+
+public class UpdateProducaoValidator : AbstractValidator<UpdateProducaoRequest>
+{
+    public UpdateProducaoValidator()
+    {
+        Include(new ProducaoRequestRegras());
     }
 }

@@ -1,4 +1,5 @@
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using OpMetrics.Core.Data;
 using OpMetrics.Core.Mappings;
@@ -18,6 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateProducaoValidator>();
+builder.Services.AddFluentValidationAutoValidation();
 
 //repositorios
 builder.Services.AddScoped<IProducaoRepository, ProducaoRepository>();

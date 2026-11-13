@@ -1,6 +1,15 @@
 ﻿namespace OpMetrics.Core.DTOs.Requests;
 
-public class CreateProducaoRequest
+public interface IProducaoRequest
+{
+    string Linha { get; set; }
+    DateTime Data { get; set; }
+    string Turno { get; set; }
+    double MetaPecas { get; set; }
+    double PecasProduzidas { get; set; }
+}
+
+public class CreateProducaoRequest : IProducaoRequest
 {
     public string Linha { get; set; } = string.Empty;
     public DateTime Data { get; set; }
@@ -9,7 +18,7 @@ public class CreateProducaoRequest
     public double PecasProduzidas { get; set; }
 }
 
-public class UpdateProducaoRequest
+public class UpdateProducaoRequest : IProducaoRequest
 {
     public string Linha { get; set; } = string.Empty;
     public DateTime Data { get; set; }

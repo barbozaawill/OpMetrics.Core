@@ -144,6 +144,21 @@ A porta é exibida no terminal ao iniciar a aplicação.
 
 ---
 
+## Testes
+
+O projeto `OpMetrics.Tests` (xUnit) cobre os cálculos das métricas e as regras de validação:
+
+```bash
+dotnet test
+```
+
+- **Entidades:** Disponibilidade, Performance, Índice de Qualidade e OEE final, incluindo casos de divisão por zero.
+- **Validators:** regras de entrada (turno, data futura, peças boas ≤ produzidas, defeitos + rejeitos ≤ inspecionado).
+
+As validações rodam automaticamente em cada requisição: dados inválidos retornam `400 Bad Request` com a lista de erros por campo.
+
+---
+
 ## Estrutura do projeto
 
 ```
@@ -160,5 +175,6 @@ OpMetrics.Core/
 │   └── Interfaces/
 ├── Services/            # Lógica de negócio
 │   └── Interfaces/
-└── Validators/          # Validações de entrada
+├── Validators/          # Validações de entrada
+└── OpMetrics.Tests/     # Testes unitários (xUnit)
 ```
