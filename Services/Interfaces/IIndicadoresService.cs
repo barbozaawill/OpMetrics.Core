@@ -22,12 +22,3 @@ public interface IQualidadeService
     Task<QualidadeResponse?> UpdateAsync(Guid id, UpdateQualidadeRequest request);
     Task<bool> DeleteAsync(Guid id);
 }
-
-public interface IOeeService
-{
-    Task<IEnumerable<OeeResponse>> GetAllAsync();
-    Task<OeeResponse?> GetByIdAsync(Guid id);
-    Task<IEnumerable<OeeResponse>> GetByLinhaAsync(string linha);
-    Task<OeeResponse?> UpdateAsync(Guid id, UpdateOeeRequest request);
-    Task<bool> DeleteAsync(Guid id);
-}

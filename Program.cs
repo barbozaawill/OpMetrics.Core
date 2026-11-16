@@ -26,18 +26,23 @@ builder.Services.AddFluentValidationAutoValidation();
 //repositorios
 builder.Services.AddScoped<IProducaoRepository, ProducaoRepository>();
 builder.Services.AddScoped<IQualidadeRepository, QualidadeRepository>();
-builder.Services.AddScoped<IOeeRepository, OeeRepository>();
 
 //serviços
 builder.Services.AddScoped<IProducaoService, ProducaoService>();
 builder.Services.AddScoped<IQualidadeService, QualidadeService>();
-builder.Services.AddScoped<IOeeService, OeeService>();
 
 // Vertical slices
 builder.Services.AddOee();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Cada slice tem sua própria classe "Request" (RegistrarOee.Request, AtualizarOee.Request...).
+    // Sem isso, o Swagger tentaria chamar todas de "Request" e daria conflito.
+    // Com isso, elas viram "RegistrarOeeRequest", "AtualizarOeeRequest" etc.
+    options.CustomSchemaIds(tipo =>
+        tipo.DeclaringType is null ? tipo.Name : tipo.DeclaringType.Name + tipo.Name);
+});
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 

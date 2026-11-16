@@ -21,10 +21,5 @@ public class MappingProfile : Profile
         CreateMap<UpdateQualidadeRequest, Qualidade>();
 
         CreateMap<Qualidade, QualidadeResponse>();
-
-        //Oee
-        CreateMap<UpdateOeeRequest, Oee>();
-
-        CreateMap<Oee, OeeResponse>();
     }
 }

@@ -1,9 +1,7 @@
 using FluentValidation;
 using OpMetrics.Core.Common;
 using OpMetrics.Core.Data;
-using OpMetrics.Core.DTOs.Requests;
 using OpMetrics.Core.Entities;
-using OpMetrics.Core.Validators;
 
 namespace OpMetrics.Core.Features.Oees;
 

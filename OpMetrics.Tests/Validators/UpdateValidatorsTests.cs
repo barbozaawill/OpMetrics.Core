@@ -1,4 +1,5 @@
 using OpMetrics.Core.DTOs.Requests;
+using OpMetrics.Core.Features.Oees;
 using OpMetrics.Core.Validators;
 
 namespace OpMetrics.Tests.Validators;
@@ -6,41 +7,37 @@ namespace OpMetrics.Tests.Validators;
 public class UpdateValidatorsTests
 {
     [Fact]
-    public void UpdateOee_Valido_Passa()
+    public void AtualizarOee_Valido_Passa()
     {
-        var request = new UpdateOeeRequest
-        {
-            Linha = "Linha 1",
-            Data = DateTime.UtcNow.AddDays(-1),
-            Turno = "Noite",
-            TempoPlaneadoMinutos = 480,
-            TempoRodandoMinutos = 480,
-            CapacidadeIdealPecas = 1000,
-            PecasProduzidas = 1000,
-            PecasBoas = 1000
-        };
+        var request = new AtualizarOee.Request(
+            Linha: "Linha 1",
+            Data: DateTime.UtcNow.AddDays(-1),
+            Turno: "Noite",
+            TempoPlaneadoMinutos: 480,
+            TempoRodandoMinutos: 480,
+            CapacidadeIdealPecas: 1000,
+            PecasProduzidas: 1000,
+            PecasBoas: 1000);
 
-        Assert.True(new UpdateOeeValidator().Validate(request).IsValid);
+        Assert.True(new AtualizarOee.Validator().Validate(request).IsValid);
     }
 
     [Fact]
-    public void UpdateOee_PecasBoasMaiorQueProduzidas_EhInvalido()
+    public void AtualizarOee_PecasBoasMaiorQueProduzidas_EhInvalido()
     {
-        var request = new UpdateOeeRequest
-        {
-            Linha = "Linha 1",
-            Data = DateTime.UtcNow.AddDays(-1),
-            Turno = "Manha",
-            TempoPlaneadoMinutos = 480,
-            TempoRodandoMinutos = 400,
-            CapacidadeIdealPecas = 1000,
-            PecasProduzidas = 900,
-            PecasBoas = 950
-        };
+        var request = new AtualizarOee.Request(
+            Linha: "Linha 1",
+            Data: DateTime.UtcNow.AddDays(-1),
+            Turno: "Manha",
+            TempoPlaneadoMinutos: 480,
+            TempoRodandoMinutos: 400,
+            CapacidadeIdealPecas: 1000,
+            PecasProduzidas: 900,
+            PecasBoas: 950);
 
-        var resultado = new UpdateOeeValidator().Validate(request);
+        var resultado = new AtualizarOee.Validator().Validate(request);
 
-        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(UpdateOeeRequest.PecasBoas));
+        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(AtualizarOee.Request.PecasBoas));
     }
 
     [Fact]

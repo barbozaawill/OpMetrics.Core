@@ -1,8 +1,27 @@
-﻿using FluentValidation;
-using OpMetrics.Core.DTOs.Requests;
+using FluentValidation;
 
-namespace OpMetrics.Core.Validators;
+namespace OpMetrics.Core.Features.Oees;
 
+/// <summary>
+/// Os dados de entrada que registrar e atualizar um OEE têm em comum.
+/// Só leitura: as regras de validação apenas leem os valores.
+/// </summary>
+public interface IOeeRequest
+{
+    string Linha { get; }
+    DateTime Data { get; }
+    string Turno { get; }
+    double TempoPlaneadoMinutos { get; }
+    double TempoRodandoMinutos { get; }
+    double CapacidadeIdealPecas { get; }
+    double PecasProduzidas { get; }
+    double PecasBoas { get; }
+}
+
+/// <summary>
+/// Regras de validação de um OEE, escritas uma vez e reaproveitadas
+/// pelos slices RegistrarOee e AtualizarOee (via Include).
+/// </summary>
 public class OeeRequestRegras : AbstractValidator<IOeeRequest>
 {
     public OeeRequestRegras()
@@ -38,13 +57,5 @@ public class OeeRequestRegras : AbstractValidator<IOeeRequest>
             .GreaterThanOrEqualTo(0)
             .WithMessage("Peças boas não pode ser menor que zero")
             .LessThanOrEqualTo(x => x.PecasProduzidas).WithMessage("Peças boas não pode ser maior que peças produzidas");
-    }
-}
-
-public class UpdateOeeValidator : AbstractValidator<UpdateOeeRequest>
-{
-    public UpdateOeeValidator()
-    {
-        Include(new OeeRequestRegras());
     }
 }
