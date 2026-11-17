@@ -1,7 +1,24 @@
-﻿using FluentValidation;
-using OpMetrics.Core.DTOs.Requests;
+using FluentValidation;
 
-namespace OpMetrics.Core.Validators;
+namespace OpMetrics.Core.Features.Producoes;
+
+/// <summary>
+/// Os dados de entrada que registrar e atualizar uma produção têm em comum.
+/// Só leitura: as regras de validação apenas leem os valores.
+/// </summary>
+public interface IProducaoRequest
+{
+    string Linha { get; }
+    DateTime Data { get; }
+    string Turno { get; }
+    double MetaPecas { get; }
+    double PecasProduzidas { get; }
+}
+
+/// <summary>
+/// Regras de validação de uma produção, escritas uma vez e reaproveitadas
+/// pelos slices RegistrarProducao e AtualizarProducao (via Include).
+/// </summary>
 public class ProducaoRequestRegras : AbstractValidator<IProducaoRequest>
 {
     public ProducaoRequestRegras()
@@ -24,21 +41,5 @@ public class ProducaoRequestRegras : AbstractValidator<IProducaoRequest>
 
         RuleFor(x => x.PecasProduzidas)
             .GreaterThanOrEqualTo(0).WithMessage("Valor não pode ser negativo");
-    }
-}
-
-public class CreateProducaoValidator : AbstractValidator<CreateProducaoRequest>
-{
-    public CreateProducaoValidator()
-    {
-        Include(new ProducaoRequestRegras());
-    }
-}
-
-public class UpdateProducaoValidator : AbstractValidator<UpdateProducaoRequest>
-{
-    public UpdateProducaoValidator()
-    {
-        Include(new ProducaoRequestRegras());
     }
 }

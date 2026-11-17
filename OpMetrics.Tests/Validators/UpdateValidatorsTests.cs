@@ -1,5 +1,6 @@
 using OpMetrics.Core.DTOs.Requests;
 using OpMetrics.Core.Features.Oees;
+using OpMetrics.Core.Features.Producoes;
 using OpMetrics.Core.Validators;
 
 namespace OpMetrics.Tests.Validators;
@@ -41,35 +42,31 @@ public class UpdateValidatorsTests
     }
 
     [Fact]
-    public void UpdateProducao_MetaZero_EhInvalido()
+    public void AtualizarProducao_MetaZero_EhInvalido()
     {
-        var request = new UpdateProducaoRequest
-        {
-            Linha = "Linha 1",
-            Data = DateTime.UtcNow.AddDays(-1),
-            Turno = "Tarde",
-            MetaPecas = 0,
-            PecasProduzidas = 100
-        };
+        var request = new AtualizarProducao.Request(
+            Linha: "Linha 1",
+            Data: DateTime.UtcNow.AddDays(-1),
+            Turno: "Tarde",
+            MetaPecas: 0,
+            PecasProduzidas: 100);
 
-        var resultado = new UpdateProducaoValidator().Validate(request);
+        var resultado = new AtualizarProducao.Validator().Validate(request);
 
-        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(UpdateProducaoRequest.MetaPecas));
+        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(AtualizarProducao.Request.MetaPecas));
     }
 
     [Fact]
-    public void UpdateProducao_Valido_Passa()
+    public void AtualizarProducao_Valido_Passa()
     {
-        var request = new UpdateProducaoRequest
-        {
-            Linha = "Linha 1",
-            Data = DateTime.UtcNow.AddDays(-1),
-            Turno = "Tarde",
-            MetaPecas = 1000,
-            PecasProduzidas = 1100
-        };
+        var request = new AtualizarProducao.Request(
+            Linha: "Linha 1",
+            Data: DateTime.UtcNow.AddDays(-1),
+            Turno: "Tarde",
+            MetaPecas: 1000,
+            PecasProduzidas: 1100);
 
-        Assert.True(new UpdateProducaoValidator().Validate(request).IsValid);
+        Assert.True(new AtualizarProducao.Validator().Validate(request).IsValid);
     }
 
     [Fact]

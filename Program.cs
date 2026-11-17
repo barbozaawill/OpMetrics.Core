@@ -3,6 +3,7 @@ using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using OpMetrics.Core.Data;
 using OpMetrics.Core.Features.Oees;
+using OpMetrics.Core.Features.Producoes;
 using OpMetrics.Core.Mappings;
 using OpMetrics.Core.Repositories;
 using OpMetrics.Core.Repositories.Interfaces;
@@ -24,15 +25,14 @@ builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddFluentValidationAutoValidation();
 
 //repositorios
-builder.Services.AddScoped<IProducaoRepository, ProducaoRepository>();
 builder.Services.AddScoped<IQualidadeRepository, QualidadeRepository>();
 
 //serviços
-builder.Services.AddScoped<IProducaoService, ProducaoService>();
 builder.Services.AddScoped<IQualidadeService, QualidadeService>();
 
 // Vertical slices
 builder.Services.AddOee();
+builder.Services.AddProducao();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -58,6 +58,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.MapOee();
+app.MapProducao();
 
 app.Run();
 

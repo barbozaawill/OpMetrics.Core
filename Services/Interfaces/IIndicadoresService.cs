@@ -3,16 +3,6 @@ using OpMetrics.Core.DTOs.Responses;
 
 namespace OpMetrics.Core.Services;
 
-public interface IProducaoService
-{
-    Task<IEnumerable<ProducaoResponse>> GetAllAsync();
-    Task<ProducaoResponse?> GetByIdAsync(Guid id);
-    Task<IEnumerable<ProducaoResponse>> GetByLinhaAsync(string linha);
-    Task<ProducaoResponse> CreateAsync(CreateProducaoRequest request);
-    Task<ProducaoResponse?> UpdateAsync(Guid id, UpdateProducaoRequest request);
-    Task<bool> DeleteAsync(Guid id);
-}
-
 public interface IQualidadeService
 {
     Task<IEnumerable<QualidadeResponse>> GetAllAsync();
