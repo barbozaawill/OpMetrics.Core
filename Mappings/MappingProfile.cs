@@ -1,7 +1,4 @@
 ﻿using AutoMapper;
-using OpMetrics.Core.DTOs.Requests;
-using OpMetrics.Core.DTOs.Responses;
-using OpMetrics.Core.Entities;
 
 namespace OpMetrics.Core.Mappings;
 
@@ -9,10 +6,6 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        // Qualidade
-        CreateMap<CreateQualidadeRequest, Qualidade>();
-        CreateMap<UpdateQualidadeRequest, Qualidade>();
-
-        CreateMap<Qualidade, QualidadeResponse>();
+        // Vazio: os mapeamentos agora são manuais, dentro de cada slice (ex.: OeeResposta.De).
     }
 }

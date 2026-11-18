@@ -1,7 +1,6 @@
-using OpMetrics.Core.DTOs.Requests;
 using OpMetrics.Core.Features.Oees;
 using OpMetrics.Core.Features.Producoes;
-using OpMetrics.Core.Validators;
+using OpMetrics.Core.Features.Qualidades;
 
 namespace OpMetrics.Tests.Validators;
 
@@ -70,34 +69,32 @@ public class UpdateValidatorsTests
     }
 
     [Fact]
-    public void UpdateQualidade_DefeitosMaisRejeitosAcimaDoInspecionado_EhInvalido()
+    public void AtualizarQualidade_DefeitosMaisRejeitosAcimaDoInspecionado_EhInvalido()
     {
-        var request = new UpdateQualidadeRequest
-        {
-            Linha = "Linha 1",
-            Data = DateTime.UtcNow.AddDays(-1),
-            Turno = "Manha",
-            TotalInspecionado = 100,
-            TotalDefeitos = 70,
-            TotalRejeitos = 40
-        };
+        var request = new AtualizarQualidade.Request(
+            Linha: "Linha 1",
+            Data: DateTime.UtcNow.AddDays(-1),
+            Turno: "Manha",
+            TotalInspecionado: 100,
+            TotalDefeitos: 70,
+            TotalRejeitos: 40);
 
-        Assert.False(new UpdateQualidadeValidator().Validate(request).IsValid);
+        Assert.False(new AtualizarQualidade.Validator().Validate(request).IsValid);
     }
 
     [Fact]
-    public void UpdateQualidade_TurnoInvalido_EhRejeitado()
+    public void AtualizarQualidade_TurnoInvalido_EhRejeitado()
     {
-        var request = new UpdateQualidadeRequest
-        {
-            Linha = "Linha 1",
-            Data = DateTime.UtcNow.AddDays(-1),
-            Turno = "Madrugada",
-            TotalInspecionado = 100
-        };
+        var request = new AtualizarQualidade.Request(
+            Linha: "Linha 1",
+            Data: DateTime.UtcNow.AddDays(-1),
+            Turno: "Madrugada",
+            TotalInspecionado: 100,
+            TotalDefeitos: 0,
+            TotalRejeitos: 0);
 
-        var resultado = new UpdateQualidadeValidator().Validate(request);
+        var resultado = new AtualizarQualidade.Validator().Validate(request);
 
-        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(UpdateQualidadeRequest.Turno));
+        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(AtualizarQualidade.Request.Turno));
     }
 }

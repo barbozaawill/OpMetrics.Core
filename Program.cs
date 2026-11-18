@@ -4,11 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using OpMetrics.Core.Data;
 using OpMetrics.Core.Features.Oees;
 using OpMetrics.Core.Features.Producoes;
+using OpMetrics.Core.Features.Qualidades;
 using OpMetrics.Core.Mappings;
-using OpMetrics.Core.Repositories;
-using OpMetrics.Core.Repositories.Interfaces;
-using OpMetrics.Core.Services;
-
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,19 +17,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-// Validação automática dos controllers que ainda não viraram slices.
-// Os slices validam pelo ValidationFilter (Common/ValidationFilter.cs).
+// Não há mais controllers: os slices validam pelo ValidationFilter (Common/ValidationFilter.cs).
+// A validação automática de controllers e o AutoMapper saem no próximo commit (limpeza final).
 builder.Services.AddFluentValidationAutoValidation();
-
-//repositorios
-builder.Services.AddScoped<IQualidadeRepository, QualidadeRepository>();
-
-//serviços
-builder.Services.AddScoped<IQualidadeService, QualidadeService>();
 
 // Vertical slices
 builder.Services.AddOee();
 builder.Services.AddProducao();
+builder.Services.AddQualidade();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -59,6 +51,7 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapOee();
 app.MapProducao();
+app.MapQualidade();
 
 app.Run();
 
