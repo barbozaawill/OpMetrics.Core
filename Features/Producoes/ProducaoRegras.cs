@@ -1,0 +1,45 @@
+using FluentValidation;
+
+namespace OpMetrics.Core.Features.Producoes;
+
+/// <summary>
+/// Os dados de entrada que registrar e atualizar uma produção têm em comum.
+/// Só leitura: as regras de validação apenas leem os valores.
+/// </summary>
+public interface IProducaoRequest
+{
+    string Linha { get; }
+    DateTime Data { get; }
+    string Turno { get; }
+    double MetaPecas { get; }
+    double PecasProduzidas { get; }
+}
+
+/// <summary>
+/// Regras de validação de uma produção, escritas uma vez e reaproveitadas
+/// pelos slices RegistrarProducao e AtualizarProducao (via Include).
+/// </summary>
+public class ProducaoRequestRegras : AbstractValidator<IProducaoRequest>
+{
+    public ProducaoRequestRegras()
+    {
+        RuleFor(x => x.Linha)
+            .NotEmpty().WithMessage("Linha é obrigatória")
+            .MaximumLength(100).WithMessage("Linha deve ter no máximo 100 caracteres");
+
+        RuleFor(x => x.Data)
+            .NotEmpty().WithMessage("Data é obrigatória")
+            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Data não pode ser futura");
+
+        RuleFor(x => x.Turno)
+            .NotEmpty().WithMessage("Turno é obrigatório")
+            .Must(t => t == "Manha" || t == "Tarde" || t == "Noite")
+            .WithMessage("Turno deve ser: Manha, Tarde ou Noite.");
+
+        RuleFor(x => x.MetaPecas)
+            .GreaterThan(0).WithMessage("Meta de peças deve ser maior que zero.");
+
+        RuleFor(x => x.PecasProduzidas)
+            .GreaterThanOrEqualTo(0).WithMessage("Valor não pode ser negativo");
+    }
+}

@@ -1,38 +1,33 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using OpMetrics.Core.Data;
-using OpMetrics.Core.Mappings;
-using OpMetrics.Core.Repositories;
-using OpMetrics.Core.Repositories.Interfaces;
-using OpMetrics.Core.Services;
-using OpMetrics.Core.Validators;
-
+using OpMetrics.Core.Features.Oees;
+using OpMetrics.Core.Features.Producoes;
+using OpMetrics.Core.Features.Qualidades;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+// Registra todos os validators do projeto (inclusive os que ficam dentro dos slices).
+// Quem executa a validação é o ValidationFilter (Common/ValidationFilter.cs).
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
-builder.Services.AddValidatorsFromAssemblyContaining<CreateProducaoValidator>();
-builder.Services.AddFluentValidationAutoValidation();
-
-//repositorios
-builder.Services.AddScoped<IProducaoRepository, ProducaoRepository>();
-builder.Services.AddScoped<IQualidadeRepository, QualidadeRepository>();
-builder.Services.AddScoped<IOeeRepository, OeeRepository>();
-
-//servi�os
-builder.Services.AddScoped<IProducaoService, ProducaoService>();
-builder.Services.AddScoped<IQualidadeService, QualidadeService>();
-builder.Services.AddScoped<IOeeService, OeeService>();
+// Vertical slices: cada feature registra os próprios handlers.
+builder.Services.AddOee();
+builder.Services.AddProducao();
+builder.Services.AddQualidade();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Cada slice tem sua própria classe "Request" (RegistrarOee.Request, AtualizarOee.Request...).
+    // Sem isso, o Swagger tentaria chamar todas de "Request" e daria conflito.
+    // Com isso, elas viram "RegistrarOeeRequest", "AtualizarOeeRequest" etc.
+    options.CustomSchemaIds(tipo =>
+        tipo.DeclaringType is null ? tipo.Name : tipo.DeclaringType.Name + tipo.Name);
+});
 
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
@@ -45,7 +40,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
+
+// Vertical slices: cada feature registra as próprias rotas.
+app.MapOee();
+app.MapProducao();
+app.MapQualidade();
 
 app.Run();
+
+// Permite que os testes referenciem o assembly da API (ex.: WebApplicationFactory<Program>).
+public partial class Program { }
