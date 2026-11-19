@@ -1,6 +1,47 @@
 @OpMetrics.Core_HostAddress = http://localhost:5160
 
-GET {{OpMetrics.Core_HostAddress}}/weatherforecast/
+### Listar OEEs
+GET {{OpMetrics.Core_HostAddress}}/api/oee
 Accept: application/json
+
+### Registrar OEE
+POST {{OpMetrics.Core_HostAddress}}/api/oee
+Content-Type: application/json
+
+{
+  "linha": "Linha 1",
+  "data": "2026-11-10T08:00:00Z",
+  "turno": "Manha",
+  "tempoPlaneadoMinutos": 480,
+  "tempoRodandoMinutos": 432,
+  "capacidadeIdealPecas": 1000,
+  "pecasProduzidas": 950,
+  "pecasBoas": 931
+}
+
+### Registrar produção
+POST {{OpMetrics.Core_HostAddress}}/api/producao
+Content-Type: application/json
+
+{
+  "linha": "Linha 1",
+  "data": "2026-11-10T08:00:00Z",
+  "turno": "Manha",
+  "metaPecas": 1000,
+  "pecasProduzidas": 950
+}
+
+### Registrar inspeção de qualidade
+POST {{OpMetrics.Core_HostAddress}}/api/qualidade
+Content-Type: application/json
+
+{
+  "linha": "Linha 1",
+  "data": "2026-11-10T08:00:00Z",
+  "turno": "Manha",
+  "totalInspecionado": 200,
+  "totalDefeitos": 6,
+  "totalRejeitos": 4
+}
 
 ###

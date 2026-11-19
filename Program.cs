@@ -1,27 +1,20 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using OpMetrics.Core.Data;
 using OpMetrics.Core.Features.Oees;
 using OpMetrics.Core.Features.Producoes;
 using OpMetrics.Core.Features.Qualidades;
-using OpMetrics.Core.Mappings;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddAutoMapper(typeof(MappingProfile));
-
+// Registra todos os validators do projeto (inclusive os que ficam dentro dos slices).
+// Quem executa a validação é o ValidationFilter (Common/ValidationFilter.cs).
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-// Não há mais controllers: os slices validam pelo ValidationFilter (Common/ValidationFilter.cs).
-// A validação automática de controllers e o AutoMapper saem no próximo commit (limpeza final).
-builder.Services.AddFluentValidationAutoValidation();
 
-// Vertical slices
+// Vertical slices: cada feature registra os próprios handlers.
 builder.Services.AddOee();
 builder.Services.AddProducao();
 builder.Services.AddQualidade();
@@ -47,8 +40,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
-app.MapControllers();
+
+// Vertical slices: cada feature registra as próprias rotas.
 app.MapOee();
 app.MapProducao();
 app.MapQualidade();

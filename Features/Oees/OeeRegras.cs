@@ -40,12 +40,12 @@ public class OeeRequestRegras : AbstractValidator<IOeeRequest>
             .WithMessage("Turno deve ser: Manha, Tarde ou Noite.");
 
         RuleFor(x => x.TempoPlaneadoMinutos)
-            .GreaterThan(0).WithMessage("Tempo planeado deve ser maior que zero");
+            .GreaterThan(0).WithMessage("Tempo planejado deve ser maior que zero");
 
         RuleFor(x => x.TempoRodandoMinutos)
             .GreaterThanOrEqualTo(0)
             .WithMessage("Tempo rodando não pode ser menor que zero")
-            .LessThanOrEqualTo(x => x.TempoPlaneadoMinutos).WithMessage("Tempo rodando não pode ser maior que o tempo planeado");
+            .LessThanOrEqualTo(x => x.TempoPlaneadoMinutos).WithMessage("Tempo rodando não pode ser maior que o tempo planejado");
 
         RuleFor(x => x.CapacidadeIdealPecas)
             .GreaterThan(0).WithMessage("Capacidade ideal deve ser maior que zero");

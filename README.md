@@ -2,7 +2,7 @@
 
 API REST para registro e consulta de indicadores operacionais de produção industrial, como OEE, volume produzido e índice de qualidade.
 
-Desenvolvida em **C# com ASP.NET Core 8** e **PostgreSQL**, com arquitetura em camadas, validações, mapeamento automático e documentação interativa via Swagger.
+Desenvolvida em **C# com ASP.NET Core 8 (Minimal APIs)** e **PostgreSQL**, organizada em **Vertical Slice Architecture**, com validações, testes automatizados e documentação interativa via Swagger.
 
 ---
 
@@ -11,7 +11,7 @@ Desenvolvida em **C# com ASP.NET Core 8** e **PostgreSQL**, com arquitetura em c
 - Registro e consulta de indicadores de **Produção**, **Qualidade** e **OEE** por linha e turno
 - Cálculo automático de métricas derivadas (percentual atingido, disponibilidade, performance, índice de qualidade e OEE final)
 - CRUD completo para cada indicador
-- Validações de entrada com FluentValidation
+- Validações de entrada com FluentValidation, com erros por campo (`400 Bad Request`)
 - Documentação interativa acessível via Swagger UI
 
 ---
@@ -20,31 +20,40 @@ Desenvolvida em **C# com ASP.NET Core 8** e **PostgreSQL**, com arquitetura em c
 
 | Camada | Tecnologia |
 |---|---|
-| Framework | ASP.NET Core 8 |
+| Framework | ASP.NET Core 8 (Minimal APIs) |
 | Banco de dados | PostgreSQL |
 | ORM | Entity Framework Core 8 + Npgsql |
-| Mapeamento | AutoMapper 12 |
 | Validação | FluentValidation 11 |
 | Documentação | Swagger (Swashbuckle) |
+| Testes | xUnit + EF Core InMemory |
 
 ---
 
-## Arquitetura
+## Arquitetura: Vertical Slice
 
-O projeto segue uma arquitetura em camadas com responsabilidades bem definidas:
+O código é organizado **por funcionalidade**, e não por camada técnica. Cada operação da API (registrar um OEE, listar produções, atualizar uma inspeção de qualidade...) é uma **fatia** (*slice*) que contém tudo o que ela precisa, num arquivo só:
 
+```csharp
+public static class RegistrarOee
+{
+    public record Request(...);                      // o que chega na requisição
+    public class Validator : AbstractValidator<...>  // as regras de validação
+    public class Handler(AppDbContext db) { ... }    // a lógica da operação
+    public static void Map(RouteGroupBuilder grupo)  // a rota HTTP
+}
 ```
-Controllers  →  Services  →  Repositories  →  Database
-                    ↕
-                 Entities / DTOs / Validators
-```
 
-- **Controllers** — recebem as requisições HTTP e devolvem as respostas
-- **Services** — contêm a lógica de negócio
-- **Repositories** — única camada que acessa o banco de dados
-- **DTOs** — objetos separados para entrada (Request) e saída (Response)
-- **Validators** — validação das requisições antes de chegar na lógica de negócio
-- **Mappings** — configuração do AutoMapper entre entidades e DTOs
+Para entender ou alterar uma funcionalidade, basta abrir um arquivo. Uma mudança numa fatia não afeta as outras.
+
+### Decisões de projeto
+
+- **Um arquivo por operação** em `Features/<Entidade>/`. Cada entidade também tem:
+  - `<Entidade>Regras.cs`: interface de entrada e regras de validação compartilhadas entre registrar e atualizar;
+  - `<Entidade>Resposta.cs`: formato da resposta, com o mapeamento a partir da entidade;
+  - `<Entidade>Endpoints.cs`: registro dos handlers (`AddOee()`) e das rotas (`MapOee()`).
+- **Validação por filtro de endpoint** (`Common/ValidationFilter.cs`): roda antes do handler e responde `400` com os erros por campo. Cada endpoint ativa com `.ComValidacao<Request>()`.
+- **`DbContext` direto nos handlers, sem repository**: o `DbContext` do EF Core já faz o papel de repositório (`DbSet`) e de unidade de trabalho (`SaveChangesAsync`). Cada handler faz só a consulta de que precisa. Consultas de leitura usam `AsNoTracking()`.
+- **Mapeamento manual** (`OeeResposta.De(oee)`) no lugar do AutoMapper: o que sai na resposta fica explícito, e qualquer mudança de nome é pega pelo compilador.
 
 ---
 
@@ -108,8 +117,8 @@ Controllers  →  Services  →  Repositories  →  Database
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/barbozaawill/OpMetrics.git
-cd OpMetrics
+git clone https://github.com/barbozaawill/OpMetrics.Core.git
+cd OpMetrics.Core
 ```
 
 ### 2. Configure a string de conexão
@@ -146,16 +155,15 @@ A porta é exibida no terminal ao iniciar a aplicação.
 
 ## Testes
 
-O projeto `OpMetrics.Tests` (xUnit) cobre os cálculos das métricas e as regras de validação:
+O projeto `OpMetrics.Tests` (xUnit) cobre:
+
+- **Entidades:** Disponibilidade, Performance, Índice de Qualidade e OEE final, incluindo casos de divisão por zero.
+- **Validators:** regras de entrada (turno, data futura, peças boas ≤ produzidas, defeitos + rejeitos ≤ inspecionado).
+- **Handlers dos slices:** cada operação testada contra um banco em memória (EF Core InMemory), incluindo os casos de registro não encontrado.
 
 ```bash
 dotnet test
 ```
-
-- **Entidades:** Disponibilidade, Performance, Índice de Qualidade e OEE final, incluindo casos de divisão por zero.
-- **Validators:** regras de entrada (turno, data futura, peças boas ≤ produzidas, defeitos + rejeitos ≤ inspecionado).
-
-As validações rodam automaticamente em cada requisição: dados inválidos retornam `400 Bad Request` com a lista de erros por campo.
 
 ---
 
@@ -163,18 +171,27 @@ As validações rodam automaticamente em cada requisição: dados inválidos ret
 
 ```
 OpMetrics.Core/
-├── Controllers/         # Endpoints da API
-├── DTOs/
-│   ├── Requests/        # Objetos de entrada
-│   └── Responses/       # Objetos de saída
-├── Data/                # DbContext
-├── Entities/            # Modelos do banco de dados
-├── Mappings/            # Perfis do AutoMapper
-├── Migrations/          # Migrations do EF Core
-├── Repositories/        # Acesso ao banco de dados
-│   └── Interfaces/
-├── Services/            # Lógica de negócio
-│   └── Interfaces/
-├── Validators/          # Validações de entrada
-└── OpMetrics.Tests/     # Testes unitários (xUnit)
+├── Common/
+│   └── ValidationFilter.cs      # Validação dos endpoints com FluentValidation
+├── Data/                        # DbContext
+├── Entities/                    # Modelos do banco de dados e cálculos das métricas
+├── Features/                    # Vertical slices
+│   ├── Oees/
+│   │   ├── RegistrarOee.cs
+│   │   ├── ObterOeePorId.cs
+│   │   ├── ListarOees.cs
+│   │   ├── ListarOeesPorLinha.cs
+│   │   ├── AtualizarOee.cs
+│   │   ├── RemoverOee.cs
+│   │   ├── OeeRegras.cs
+│   │   ├── OeeResposta.cs
+│   │   └── OeeEndpoints.cs
+│   ├── Producoes/               # Mesma estrutura
+│   └── Qualidades/              # Mesma estrutura
+├── Migrations/                  # Migrations do EF Core
+├── Program.cs
+└── OpMetrics.Tests/             # Testes (xUnit)
+    ├── Entities/
+    ├── Features/
+    └── Validators/
 ```
