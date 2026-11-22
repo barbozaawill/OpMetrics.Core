@@ -44,7 +44,7 @@ public static class RegistrarProducao
         grupo.MapPost("/", async (Request request, Handler handler, CancellationToken ct) =>
             {
                 var resposta = await handler.HandleAsync(request, ct);
-                return Results.Created($"/api/producao/{resposta.Id}", resposta);
+                return Results.CreatedAtRoute("ObterProducaoPorId", new { id = resposta.Id }, resposta);
             })
             .ComValidacao<Request>()
             .WithName("RegistrarProducao")

@@ -55,7 +55,7 @@ public static class RegistrarOee
         grupo.MapPost("/", async (Request request, Handler handler, CancellationToken ct) =>
             {
                 var resposta = await handler.HandleAsync(request, ct);
-                return Results.Created($"/api/oee/{resposta.Id}", resposta);
+                return Results.CreatedAtRoute("ObterOeePorId", new { id = resposta.Id }, resposta);
             })
             .ComValidacao<Request>()
             .WithName("RegistrarOee")

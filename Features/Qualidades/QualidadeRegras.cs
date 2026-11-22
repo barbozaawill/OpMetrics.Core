@@ -30,7 +30,7 @@ public class QualidadeRequestRegras : AbstractValidator<IQualidadeRequest>
 
         RuleFor(x => x.Data)
             .NotEmpty().WithMessage("Data é obrigatória")
-            .LessThanOrEqualTo(DateTime.UtcNow).WithMessage("Data não pode ser futura");
+            .Must(d => d <= DateTime.UtcNow).WithMessage("Data não pode ser futura");
 
         RuleFor(x => x.Turno)
             .NotEmpty().WithMessage("Turno é obrigatório")

@@ -46,7 +46,7 @@ public static class RegistrarQualidade
         grupo.MapPost("/", async (Request request, Handler handler, CancellationToken ct) =>
             {
                 var resposta = await handler.HandleAsync(request, ct);
-                return Results.Created($"/api/qualidade/{resposta.Id}", resposta);
+                return Results.CreatedAtRoute("ObterQualidadePorId", new { id = resposta.Id }, resposta);
             })
             .ComValidacao<Request>()
             .WithName("RegistrarQualidade")
