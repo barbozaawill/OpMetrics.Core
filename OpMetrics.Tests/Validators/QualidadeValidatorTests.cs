@@ -1,21 +1,18 @@
-using OpMetrics.Core.DTOs.Requests;
-using OpMetrics.Core.Validators;
+using OpMetrics.Core.Features.Qualidades;
 
 namespace OpMetrics.Tests.Validators;
 
 public class QualidadeValidatorTests
 {
-    private readonly CreateQualidadeValidator _validator = new();
+    private readonly RegistrarQualidade.Validator _validator = new();
 
-    private static CreateQualidadeRequest CriarRequest(int inspecionado, int defeitos, int rejeitos) => new()
-    {
-        Linha = "Linha 1",
-        Data = DateTime.UtcNow.AddDays(-1),
-        Turno = "Tarde",
-        TotalInspecionado = inspecionado,
-        TotalDefeitos = defeitos,
-        TotalRejeitos = rejeitos
-    };
+    private static RegistrarQualidade.Request CriarRequest(int inspecionado, int defeitos, int rejeitos) => new(
+        Linha: "Linha 1",
+        Data: DateTime.UtcNow.AddDays(-1),
+        Turno: "Tarde",
+        TotalInspecionado: inspecionado,
+        TotalDefeitos: defeitos,
+        TotalRejeitos: rejeitos);
 
     [Theory]
     [InlineData(100, 0, 0)]
@@ -39,7 +36,7 @@ public class QualidadeValidatorTests
     {
         var resultado = _validator.Validate(CriarRequest(100, -1, -1));
 
-        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(CreateQualidadeRequest.TotalDefeitos));
-        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(CreateQualidadeRequest.TotalRejeitos));
+        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(RegistrarQualidade.Request.TotalDefeitos));
+        Assert.Contains(resultado.Errors, e => e.PropertyName == nameof(RegistrarQualidade.Request.TotalRejeitos));
     }
 }
